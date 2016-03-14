@@ -9,8 +9,6 @@ var cmFireball = Packages.net.canarymod.api.entity.LargeFireball;
 var cmPlayer = cm.api.entity.living.humanoid.Player;
 var cmLocation = cm.api.world.position.Location;
 
-var fireballOwners = new Object();
-
 function onArmSwing( event ) {
   var player = event.player;
   var loc = player.location;
