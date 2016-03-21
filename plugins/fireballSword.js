@@ -13,8 +13,7 @@ function onArmSwing( event ) {
   var player = event.player;
   var loc = player.location;
   var itemInHand = player.getItemHeld();
-  if ( player.getHealth() == 20 && 
-       itemInHand && itemInHand.getType() == items.diamondSword() ) 
+  if ( player.getHealth() == 20 && isFireballSword(itemInHand) )
   {
     var entityType = entities.largefireball();
 
@@ -41,6 +40,20 @@ function onArmSwing( event ) {
   }
 }
 
+function isFireballSword( item ) 
+{
+
+  if (item && item.getType() == items.diamondSword() ) 
+  {
+    var enchantment = item.getEnchantment();
+    if (enchantment && enchantment.getLevel() == 3 && 
+    	enchantment.getType() == cmEnchantment.LuckOfTheSea) {
+      return true;
+    }
+  }
+  return false;
+}
+
 events.playerArmSwing( onArmSwing );
 
 function fling( player, entity, factor ) {
@@ -52,3 +65,24 @@ function fling( player, entity, factor ) {
  
   entity.moveEntity(x * factor, y + 0.5, z * factor);
 }
+
+var cmDiamondSword = items.diamondSword(1);
+var itemFactory = cm.Canary.factory().itemFactory;
+var cmLuck = itemFactory.newEnchantment(cmEnchantment.LuckOfTheSea,3);
+cmDiamondSword.addEnchantments( [ cmLuck ] );
+
+var fireballSwordRecipe = new Object();
+fireballSwordRecipe.result = cmDiamondSword;
+fireballSwordRecipe.shape = [ 'BDB',
+			      'BDB',
+			      'BSB' ];
+fireballSwordRecipe.ingredients = {
+  B: items.blazeRod(1), 
+  D: items.diamond(1),
+  S: items.stick(1)
+};
+
+var recipes = require('recipes');
+var recipe = recipes.create( fireballSwordRecipe );
+server.addRecipe( recipe );
+	    	
