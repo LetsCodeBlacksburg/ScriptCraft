@@ -1,6 +1,5 @@
 var items = require('items');
 var entities = require('entities');
-var spawn = require('spawn');
 
 var cm = Packages.net.canarymod;
 var entityFactory = cm.Canary.factory().entityFactory;
