@@ -4,10 +4,8 @@ var entities = require('entities');
 var cm = Packages.net.canarymod;
 var factory = cm.Canary.factory();
 var entityFactory = factory.entityFactory;
-var cmEnchantment = cm.api.inventory.Enchantment.Type;
-var cmFireball = Packages.net.canarymod.api.entity.LargeFireball;
-var cmPlayer = cm.api.entity.living.humanoid.Player;
 var cmLocation = cm.api.world.position.Location;
+var cmEnchantment = cm.api.inventory.Enchantment.Type;
 
 function onArmSwing( event ) {
   var player = event.player;
@@ -35,21 +33,9 @@ function isFireballSword( item )
 function shootFireball(player) 
 {
   var entityType = entities.largefireball();
+  var loc = getBufferInFrontOfPlayer(player);
 
-  //calc the position of the block in front of the player
-  var coord = cartesianCoords(player);
-  var BLOCKDISTANCE = 2;
-  var dx = coord[0] * BLOCKDISTANCE;
-  var dy = coord[1] * BLOCKDISTANCE;
-  var dz = coord[2] * BLOCKDISTANCE;
-
-  var loc = player.location;
-  var x = loc.getX() + dx;
-  var y = loc.getY() + dy + 0.5;
-  var z = loc.getZ() + dz;
-  var newLoc = cmLocation(x, y, z);
-
-  var fireball = entityFactory.newEntity(entityType, newLoc);
+  var fireball = entityFactory.newEntity(entityType, loc);
   fireball.spawn();
   fireball.setPower(0); /* prevent fireball from destroying blocks */
   fling( player, fireball, 3 );
@@ -63,7 +49,9 @@ events.playerArmSwing( onArmSwing );
 function fling( player, entity, factor ) 
 {
   var coord = cartesianCoords(player);
-  var x = coord[0]; var y = coord[1]; var z = coord[2];
+  var x = coord[0]; 
+  var y = coord[1]; 
+  var z = coord[2];
   entity.moveEntity(x * factor, y + 0.5, z * factor);
 }
 
@@ -75,6 +63,21 @@ function cartesianCoords( player )
   var y = Math.cos(pitch);
   var z = Math.sin(pitch) * Math.sin(rot);
   return [x, y, z];
+}
+
+function getBufferInFrontOfPlayer(player)
+{
+  var coord = cartesianCoords(player);
+  var distance = 2;
+  var dx = coord[0] * distance; 
+  var dy = coord[1] * distance; 
+  var dz = coord[2] * distance;
+
+  var loc = player.location;
+  var x = loc.getX() + dx;
+  var y = loc.getY() + dy + 0.5;
+  var z = loc.getZ() + dz;
+  return cmLocation(x, y, z);
 }
 
 var cmDiamondSword = items.diamondSword(1);
