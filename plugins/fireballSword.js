@@ -77,7 +77,7 @@ function getBufferInFrontOfPlayer(player)
   var x = loc.getX() + dx;
   var y = loc.getY() + dy + 0.5;
   var z = loc.getZ() + dz;
-  return cmLocation(x, y, z);
+  return new cmLocation(x, y, z);
 }
 
 var cmDiamondSword = items.diamondSword(1);
